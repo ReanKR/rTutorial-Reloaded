@@ -13,21 +13,21 @@ public class SubSection
 		return replace;
 	}
 	
-	public static String VariableSub(String str, Object object)
-	{
-		String replace = str.replaceAll("%var%", String.valueOf(object));
-		return replace;
-	}
-	
 	public static String RepColor(String Str)
 	{
 		String replace = ChatColor.translateAlternateColorCodes('&', Str);
 		return replace;
 	}
 	
-	public static String OutSys(String Str, Object object)
+	public static String VariableSub(String str, Object object)
 	{
-		String replace = ChatColor.translateAlternateColorCodes('&', Str);
+		String replace = str.replaceAll("%var%", String.valueOf(object));
+		return replace;
+	}
+	
+	public static String VariableColorSub(String Str, Object object)
+	{
+		String replace = RepColor(Str);
 		replace = VariableSub(replace, String.valueOf(object));
 		return replace;
 	}
@@ -44,13 +44,13 @@ public class SubSection
 	    String Replacement = Message.replaceAll("%player%", player.getName());
 	    if(Return)
 	    {
-	    	if(AddPrefix) return ChatColor.translateAlternateColorCodes('&', rTutorialReloaded.Prefix + Replacement);
-	    	else return ChatColor.translateAlternateColorCodes('&', Replacement);
+	    	if(AddPrefix) return RepColor(rTutorialReloaded.Prefix + Replacement);
+	    	else return RepColor(Replacement);
 	    }
 	    else
 	    {
-	    	if(AddPrefix) player.sendMessage(ChatColor.translateAlternateColorCodes('&', rTutorialReloaded.Prefix + Replacement));
-	    	else player.sendMessage(ChatColor.translateAlternateColorCodes('&', Replacement));
+	    	if(AddPrefix) player.sendMessage(RepColor(rTutorialReloaded.Prefix + Replacement));
+	    	else player.sendMessage(RepColor(Replacement));
 	    }
 	    return null;
 	}

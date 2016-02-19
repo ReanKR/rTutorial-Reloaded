@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.ReanKR.rTutorialReloaded.rTutorialProgress;
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
 
 public class VariableManager
@@ -29,10 +30,18 @@ public class VariableManager
 		rTutorialReloaded.SavedNewLocation = new HashMap();
 		rTutorialReloaded.CreatingCount = new HashMap();
 		rTutorialReloaded.ErrorReporting = new ArrayList();
+		rTutorialProgress.taskID = new HashMap();
+		rTutorialProgress.Progress = new HashMap();
+		rTutorialProgress.LocationProgress = new HashMap();
+		rTutorialProgress.PlayerGameMode = new HashMap();
+		rTutorialProgress.PlayerSpeed = new HashMap();
+		rTutorialProgress.PlayerFlySpeed = new HashMap();
+		rTutorialProgress.ListHidePlayer = new HashMap();
 	}
 	
 	public static boolean IgnException(ConfigurationSection Section, String Str)
 	{
 		return Section.contains(Str) ? true : false;
 	}
+	
 }
