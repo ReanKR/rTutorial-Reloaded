@@ -7,7 +7,7 @@
 # If the sentance include variable "%var", Don't delete it.
 Messages:
   BarAPIReady: "튜토리얼이 잠시 후 시작됩니다."
-  BarAPIPercent: "튜토리얼 진행 %Var%% 완료"
+  BarAPIPercent: "튜토리얼 진행 %var%% 완료"
   UnknownCommand: "알수 없는 명령어입니다. /rt"
   FirstJoin: "%player%님 환영합니다! 처음 방문이라면 /tutorial를 사용해 서버 튜토리얼을 해보십시오!"
   NotCompleteTutorial: "&c튜토리얼을 완료하지 않았습니다."
@@ -22,4 +22,4 @@ Messages:
   BlockChatWhenTutorial: "&c튜토리얼 중에는 명령어나 대화를 할 수 없습니다."
   CancelCommand: "&c취소하려면 %var%"
   ContinueCommand: "&a계속 진행하려면 %var%"
-  ContinueTutorial: "중간에 나간 기록이 있습니다. 튜토리얼을 하시겠습니까?"
+  ContinueTutorial: "중간에 나간 기록이 있습니다. 튜토리얼을 계속 하시겠습니까?"

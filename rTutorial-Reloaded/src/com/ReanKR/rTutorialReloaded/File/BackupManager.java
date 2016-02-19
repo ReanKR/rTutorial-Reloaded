@@ -21,10 +21,14 @@ public class BackupManager
 		PlayerSection.set("UUID", player.getUniqueId().toString());
 		PlayerSection.set("WalkSpeed", rTutorialProgress.PlayerSpeed.get(player.getName()));
 		PlayerSection.set("FlySpeed", rTutorialProgress.PlayerFlySpeed.get(player.getName()));
-		PlayerSection.set("Gamemode", rTutorialProgress.PlayerGameMode.get(player.getName()));
+		PlayerSection.set("Gamemode", rTutorialProgress.PlayerGameMode.get(player.getName()).name());
 		if(rTutorialReloaded.ProgressingTutorial.get(player.getName()).equalsIgnoreCase("WORKING"))
 		{
 			PlayerSection.set("Progressing", rTutorialProgress.LocationProgress.get(player.getName()));
+		}
+		else
+		{
+			
 		}
 		try
 		{
@@ -40,6 +44,24 @@ public class BackupManager
 	{
 		File file = new File("plugins/rTutorialReloaded/Player.yml");
 		FileConfiguration PlayerFile = FileSection.LoadFile("Player");
-		/* To do-generate section */
+		try
+		{
+			ConfigurationSection Section = PlayerFile.getConfigurationSection(p.getName());
+			Section.set("Progress", rTutorialReloaded.ProgressingTutorial.get(p.getName()));
+		}
+		catch(NullPointerException e)
+		{
+			PlayerFile.createSection(p.getName());
+			ConfigurationSection Section = PlayerFile.getConfigurationSection(p.getName());
+			Section.set("Progress", rTutorialReloaded.ProgressingTutorial.get(p.getName()));
+		}
+		try
+		{
+			PlayerFile.save(file);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

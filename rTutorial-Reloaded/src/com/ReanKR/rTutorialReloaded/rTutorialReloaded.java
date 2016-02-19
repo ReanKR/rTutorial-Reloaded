@@ -54,7 +54,7 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 	// Saved variable about tutorial system
 	public static HashMap<Player, String> TutorialStatus; // Loaded by Player.yml Status
 	public static HashMap<String, Boolean> TutorialComplete; // Is Player completed tutorial
-	public static HashMap<Player, String> ProgressingTutorial; // Showing the player that tutorial progressing method name
+	public static HashMap<String, String> ProgressingTutorial; // Showing the player that tutorial progressing method name
 	public static HashMap<Player, String> MainMessage; // Temp message
 	public static HashMap<Player, String> SubMessage; // Temp message
 	

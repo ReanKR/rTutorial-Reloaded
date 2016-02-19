@@ -1,6 +1,6 @@
 package com.ReanKR.rTutorialReloaded;
 
-import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +8,12 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
 import com.ReanKR.rTutorialReloaded.File.BackupManager;
+import com.ReanKR.rTutorialReloaded.File.FileSection;
 import com.ReanKR.rTutorialReloaded.Util.SoundCreation;
 import com.ReanKR.rTutorialReloaded.Util.SubSection;
 import com.connorlinfoot.titleapi.TitleAPI;
@@ -21,6 +23,7 @@ import me.confuser.barapi.BarAPI;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class rTutorialProgress
 {
+	DecimalFormat format = new DecimalFormat("0.#");
 	public static Map<String, Integer> taskID;
 	public static Map<String, Float> Progress;
 	public static Map<String, String> LocationProgress;
@@ -49,9 +52,12 @@ public class rTutorialProgress
 				{
 					Bukkit.getConsoleSender().sendMessage("Tutorial can't running : Player Leaved");
 					if(rTutorialReloaded.CompatiblePlugins[0]) BarAPI.removeBar(p);
+					PlayerGameMode.put(p.getName(), p.getGameMode());
+					PlayerSpeed.put(p.getName(), p.getWalkSpeed());
+					PlayerFlySpeed.put(p.getName(), p.getFlySpeed());
 					BackupManager.SaveUnexpected(p);
 					HidePlayer(p, false);
-					endTask(p, false);
+					endTask(p, true);
 					return;
 				}
 				
@@ -64,6 +70,7 @@ public class rTutorialProgress
 					HidePlayer(p, true);
 					endTask(p, false);
 					ProgressingTutorial(p);
+					return;
 				}
 
 				else
@@ -93,14 +100,15 @@ public class rTutorialProgress
 		},0L, 20L);
 		taskID.put(p.getName(), tid);
 		Progress.put(p.getName(), (float)rTutorialReloaded.DefaultCooldownSeconds);
-		rTutorialReloaded.ProgressingTutorial.put(p, "COOLDOWN");
+		rTutorialReloaded.ProgressingTutorial.put(p.getName(), "COOLDOWN");
 		BackupManager.SetPlayerProgress(p);
 	}
 	
 	@SuppressWarnings("deprecation")
 	public void ProgressingTutorial(final Player p)
 	{
-		String[] LocationName = (String[]) rTutorialReloaded.LocationMethod.toArray();
+		ConfigurationSection Section = FileSection.LoadFile("Location").getConfigurationSection("Locations");
+		Object[] LocationName = Section.getKeys(false).toArray();
 		final int tid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 		{
 			@Override
@@ -112,20 +120,30 @@ public class rTutorialProgress
 					if(rTutorialReloaded.CompatiblePlugins[0]) BarAPI.removeBar(p);
 					BackupManager.SaveUnexpected(p);
 					HidePlayer(p, false);
-					endTask(p, false);
+					endTask(p, true);
 					return;
 				}
 				
+				if(Progress.get(p.getName()).intValue() >= rTutorialReloaded.MethodAmount)
+				{
+					BarAPI.removeBar(p);
+					BarAPI.setMessage(p, "¡×a" + SubSection.VariableSub(SubSection.SubMsg("BarAPIPercent", p, true, false), 100) , 100);
+					endTask(p, true);
+					Result(p);
+					return;
+				}
+
+				String[] Cut = rTutorialReloaded.MessageMethod.get(LocationName[Progress.get(p.getName()).intValue()]).split(",");
 				if(! rTutorialReloaded.SoundDisabled) SC.PlayerSound(p, Sound.LEVEL_UP, 10.0F, 1.0F);
 				p.teleport(rTutorialReloaded.InfoLocation.get(LocationName[Progress.get(p.getName()).intValue()]));
 				if(rTutorialReloaded.CompatiblePlugins[0])
 				{
-					BarAPI.setMessage(p, SubSection.VariableSub(SubSection.SubMsg("BarAPIPercent", p, true, false), (Progress.get(p.getName()) / rTutorialReloaded.MethodAmount) * 100) , (Progress.get(p.getName()) / rTutorialReloaded.MethodAmount) * 100);
+					BarAPI.setMessage(p, SubSection.VariableSub(SubSection.SubMsg("BarAPIPercent", p, true, false), format.format((Progress.get(p.getName()) / rTutorialReloaded.MethodAmount) * 100)) , (Progress.get(p.getName()) / rTutorialReloaded.MethodAmount) * 100);
 				}
-				if(rTutorialReloaded.CompatiblePlugins[1]) TitleAPI.sendTitle(p, rTutorialReloaded.DefaultDelaySeconds / 6,rTutorialReloaded.DefaultDelaySeconds / 6, rTutorialReloaded.DefaultDelaySeconds*20, rTutorialReloaded.MainMessage.get(LocationName[Progress.get(p.getName()).intValue()]), rTutorialReloaded.SubMessage.get(LocationName[Progress.get(p.getName()).intValue()]));
-				else p.sendMessage(SubSection.RepColor(rTutorialReloaded.MainMessage.get(LocationName[Progress.get(p.getName()).intValue()])));
+				if(rTutorialReloaded.CompatiblePlugins[1]) TitleAPI.sendTitle(p, rTutorialReloaded.DefaultDelaySeconds / 6,rTutorialReloaded.DefaultDelaySeconds / 6, rTutorialReloaded.DefaultDelaySeconds*20, SubSection.RepColor(Cut[0]), SubSection.RepColor(Cut[1]));
+				else p.sendMessage(SubSection.RepColor(Cut[0]));
+				LocationProgress.put(p.getName(), LocationName[Progress.get(p.getName()).intValue()].toString());
 				Progress.put(p.getName(), Progress.get(p.getName()) + 1.0F);
-				LocationProgress.put(p.getName(), LocationName[Progress.get(p.getName()).intValue()]);
 			}
 		}, 0L, rTutorialReloaded.DefaultDelaySeconds*20L);
 		
@@ -133,15 +151,15 @@ public class rTutorialProgress
 		p.setWalkSpeed(0.0F);
 		p.setFlySpeed(0.0F);
 		taskID.put(p.getName(), tid);
-		Progress.put(p.getName(), 0F);
+		Progress.put(p.getName(), 0.0F);
 		p.setGameMode(GameMode.SPECTATOR);
-		rTutorialReloaded.ProgressingTutorial.put(p, "WORKING");
+		rTutorialReloaded.ProgressingTutorial.put(p.getName(), "WORKING");
 		BackupManager.SetPlayerProgress(p);
 	}
 	
 	public void Result(final Player p)
 	{
-		rTutorialReloaded.ProgressingTutorial.put(p, "COMPLETE");
+		rTutorialReloaded.ProgressingTutorial.put(p.getName(), "COMPLETE");
 	}
 
 	public void endTask(Player p, boolean CompleteTutorial)
@@ -156,6 +174,7 @@ public class rTutorialProgress
 
 		if(CompleteTutorial)
 		{
+			BarAPI.removeBar(p);
 			HidePlayer(p, false);
 			p.setGameMode(PlayerGameMode.get(p.getName()));
 			p.setWalkSpeed(PlayerSpeed.get(p.getName()));
@@ -180,10 +199,17 @@ public class rTutorialProgress
 	
 	public static void HidePlayer(Player p, boolean isHide)
 	{
-		for(Player player : ListHidePlayer.get(p.getName()))
+		try
 		{
-			if(isHide) p.hidePlayer(player);
-			else p.showPlayer(player);
+			for(Player player : ListHidePlayer.get(p.getName()))
+			{
+				if(isHide) p.hidePlayer(player);
+				else p.showPlayer(player);
+			}
+		}
+		catch(NullPointerException e)
+		{
+			
 		}
 	}
 }

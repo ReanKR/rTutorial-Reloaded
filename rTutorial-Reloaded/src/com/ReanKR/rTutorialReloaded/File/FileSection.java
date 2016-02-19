@@ -24,7 +24,7 @@ public class FileSection
 		          rTutorialReloaded.plugin.saveResource(Path, true);
 		          Bukkit.getConsoleSender().sendMessage(rTutorialReloaded.Prefix + "Create New File " + file.getAbsolutePath());
 		      }
-		      catch (NullPointerException e)
+		      catch (IllegalArgumentException e)
 		      {
 		    	  try
 		    	  {

@@ -1,5 +1,6 @@
 package com.ReanKR.rTutorialReloaded;
 
-public class rTutorialGenerate {
+public class rTutorialGenerate
+{
 
 }

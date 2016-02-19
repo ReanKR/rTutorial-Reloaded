@@ -1,5 +1,6 @@
 package com.ReanKR.rTutorialReloaded.Commands;
 
-public class rTutorialCommand {
+public class rTutorialCommand
+{
 
 }

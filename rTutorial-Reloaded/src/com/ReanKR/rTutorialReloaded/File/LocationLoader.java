@@ -11,7 +11,7 @@ import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
 
 public class LocationLoader
 {
-	public void LocationCfg()
+	public static void LocationCfg()
 	{
 		FileConfiguration LocationYaml = FileSection.LoadFile("Location");
 		ConfigurationSection CS = LocationYaml.getConfigurationSection("Locations");
