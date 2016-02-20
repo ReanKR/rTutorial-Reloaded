@@ -54,9 +54,10 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 	// Saved variable about tutorial system
 	public static HashMap<Player, String> TutorialStatus; // Loaded by Player.yml Status
 	public static HashMap<String, Boolean> TutorialComplete; // Is Player completed tutorial
-	public static HashMap<String, String> ProgressingTutorial; // Showing the player that tutorial progressing method name
+	public static HashMap<String, String> ProgressingTutorial; // PlayerName, Showing the player that tutorial progressing method name
 	public static HashMap<Player, String> MainMessage; // Temp message
 	public static HashMap<Player, String> SubMessage; // Temp message
+	public static HashMap<Player, String> LocationName; // Temp Name
 	
 	// Saved variable about create to tutorial progressing
 	public static HashMap<Player, Boolean> IsCreateNewLocation;  // Enabled Blocking AsyncChatEvent when creating new data
@@ -73,7 +74,6 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 	// Substituted for sentance contraction
 	private ConsoleCommandSender Console = Bukkit.getConsoleSender();
 	private ConfigLoader CL = new ConfigLoader();
-	private LocationLoader LL = new LocationLoader();
 	private rTutorialProgress TP = new rTutorialProgress(this);
 	
 	@Override
@@ -84,7 +84,7 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 		VariableManager.InitAllVariable();
 		CL.LoadCfg();
 		CL.LoadMessage();
-		LL.LocationCfg();
+		LocationLoader.LocationCfg();
 		Eco = EconomyAPI.getEconomy();
 		ErrorReporter.ResultErrorReport();
 		Console.sendMessage(Prefix + "」bM」fade 」bb」fy Rean KR,」9 whitehack97@gmail.com");

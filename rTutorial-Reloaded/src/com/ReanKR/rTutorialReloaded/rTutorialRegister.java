@@ -13,19 +13,19 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class rTutorialRegister
 {
-    public void LocationRegister(Location Loc, List<String> Msg, int index)
+    public void LocationRegister(Location Loc, String LocName, List<String> Msg, int index)
     {
-	    File file = new File("plugins/rTutorial/Location.yml");
+	    File file = new File("plugins/rTutorialReloaded/Location.yml");
 	    YamlConfiguration LocationYaml = YamlConfiguration.loadConfiguration(file);
 	    ConfigurationSection CS = LocationYaml.getConfigurationSection("Locations");
-	    CS.createSection(String.valueOf(rTutorialReloaded.MethodAmount));
+	    CS.createSection(LocName);
 	    World world = Loc.getWorld();
 	    double x = Double.valueOf(Loc.getX());
 	    double y = Double.valueOf(Loc.getY());
 	    double z = Double.valueOf(Loc.getZ());
 	    float pitch = Loc.getPitch();
 	    float yaw = Loc.getYaw();
-	    ConfigurationSection CS2 = CS.getConfigurationSection(String.valueOf(rTutorialReloaded.MethodAmount));
+	    ConfigurationSection CS2 = CS.getConfigurationSection(LocName);
 	    CS2.createSection("Location");
 	    CS2.createSection("Message");
 	    ConfigurationSection CS3 = FileSection.PlusSelect(CS2, "Location");

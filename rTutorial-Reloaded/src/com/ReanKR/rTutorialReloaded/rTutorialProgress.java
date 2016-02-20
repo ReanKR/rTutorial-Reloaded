@@ -10,6 +10,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
 import com.ReanKR.rTutorialReloaded.File.BackupManager;
@@ -19,6 +20,7 @@ import com.ReanKR.rTutorialReloaded.Util.SubSection;
 import com.connorlinfoot.titleapi.TitleAPI;
 
 import me.confuser.barapi.BarAPI;
+import net.milkbowl.vault.economy.Economy;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class rTutorialProgress
@@ -159,7 +161,30 @@ public class rTutorialProgress
 	
 	public void Result(final Player p)
 	{
+		for(String Commands : rTutorialReloaded.ResultCommands)
+		{
+			String[] Cutter = Commands.split(": ");
+			if(Commands.contains("Console"))
+			{
+				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), SubSection.Sub(Cutter[1], p));
+			}
+			
+			else if(Commands.contains("Money"))
+			{
+				Economy Echo = com.ReanKR.rTutorialReloaded.Listeners.EconomyAPI.getEconomy();
+				Echo.depositPlayer(p, Double.parseDouble(Cutter[1]));
+			}
+			else
+			{
+				plugin.getServer().dispatchCommand(p, SubSection.Sub(Commands, p));
+			}
+		}
+		for(ItemStack Items : rTutorialReloaded.ResultItems)
+		{
+			p.getInventory().addItem(Items);
+		}
 		rTutorialReloaded.ProgressingTutorial.put(p.getName(), "COMPLETE");
+		BackupManager.SetPlayerProgress(p);
 	}
 
 	public void endTask(Player p, boolean CompleteTutorial)

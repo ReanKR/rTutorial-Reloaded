@@ -6,6 +6,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import com.ReanKR.rTutorialReloaded.Util.SoundCreation;
 import com.ReanKR.rTutorialReloaded.Util.SubSection;
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
@@ -17,17 +18,27 @@ public class CreateNewLocation extends JavaPlugin
 	@EventHandler
 	public void CreateNewMethod(AsyncPlayerChatEvent e)
 	{
-		if(! rTutorialReloaded.MainMessage.containsKey(e.getPlayer()))
+		if(rTutorialReloaded.IsCreateNewLocation.get(e.getPlayer()).booleanValue())
 		{
-			rTutorialReloaded.MainMessage.put(e.getPlayer(), e.getMessage());
-		}
-		else
-		{
-			rTutorialReloaded.SubMessage.put(e.getPlayer(), e.getMessage());
-			rTutorialReloaded.IsCreateNewLocation.remove(e.getPlayer());
-			rTutorialReloaded.SavedNewLocation.put(e.getPlayer(), true);
-			e.getPlayer().sendMessage(SubSection.GameMsg(rTutorialReloaded.SystemMessage.get("CompleteCreatingMethod")));
-			e.getPlayer().sendMessage(SubSection.GameMsg(SubSection.VariableSub(rTutorialReloaded.SystemMessage.get("ContinueCommand"), "/rt create save")));
+			if(! rTutorialReloaded.MainMessage.containsKey(e.getPlayer()))
+			{
+				rTutorialReloaded.MainMessage.put(e.getPlayer(), e.getMessage());
+				SubSection.Msg(e.getPlayer(), "보조 메세지를 입력하여 주십시오. 없으면 없음 또는 None이라고 입력해주십시오.");
+				SubSection.Msg(e.getPlayer(), "(TitleAPI를 사용할 시 보조 메세지가 사용됩니다.)");
+			}
+			else
+			{
+				rTutorialReloaded.SubMessage.put(e.getPlayer(), e.getMessage());
+			}
+			if(! rTutorialReloaded.LocationName.containsKey(e.getPlayer()) && 
+					(rTutorialReloaded.MainMessage.containsKey(e.getPlayer()) && rTutorialReloaded.SubMessage.containsKey(e.getPlayer())))
+			{
+				rTutorialReloaded.LocationName.put(e.getPlayer(), e.getMessage());
+				rTutorialReloaded.IsCreateNewLocation.remove(e.getPlayer());
+				rTutorialReloaded.SavedNewLocation.put(e.getPlayer(), true);
+				SubSection.SubMsg("CompleteCreatingMethod", e.getPlayer(), false, true);
+				SubSection.Msg(e.getPlayer(), (SubSection.VariableSub(SubSection.SubMsg("ContinueCommand", e.getPlayer(), true, true), "ContinueCommand")));
+			}
 		}
 	}
 	
@@ -37,8 +48,8 @@ public class CreateNewLocation extends JavaPlugin
 		if(rTutorialReloaded.IsCreateNewLocation.get(e.getPlayer()).booleanValue())
 		{
 			SC.PlayerSound(e.getPlayer(), Sound.ANVIL_LAND, 1.2F, 1.7F);
-			e.getPlayer().sendMessage(SubSection.GameMsg(rTutorialReloaded.SystemMessage.get("BlockCommandWhenCreate")));
-			e.getPlayer().sendMessage(SubSection.GameMsg(SubSection.VariableSub(rTutorialReloaded.SystemMessage.get("CancelCommand"), "/rt create cancel")));
+			SubSection.SubMsg("BlockCommandWhenCreate", e.getPlayer(), false, true);
+			SubSection.Msg(e.getPlayer(), (SubSection.VariableSub(SubSection.SubMsg("CancelCommand", e.getPlayer(), true, true), "/rt set cancel")));
 			e.setCancelled(true);
 		}
 	}
