@@ -15,9 +15,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.ReanKR.rTutorialReloaded.Commands.rTutorialCommand;
 import com.ReanKR.rTutorialReloaded.File.ConfigLoader;
 import com.ReanKR.rTutorialReloaded.File.LocationLoader;
+import com.ReanKR.rTutorialReloaded.Listeners.CreateNewLocation;
 import com.ReanKR.rTutorialReloaded.Listeners.EconomyAPI;
+import com.ReanKR.rTutorialReloaded.Listeners.PlayerListener;
 import com.ReanKR.rTutorialReloaded.Util.ErrorReporter;
 import com.ReanKR.rTutorialReloaded.Util.VariableManager;
 
@@ -63,22 +66,28 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 	public static HashMap<Player, Boolean> IsCreateNewLocation;  // Enabled Blocking AsyncChatEvent when creating new data
 	public static HashMap<Player, Boolean> SavedNewLocation; // Finished creating all progress
 	public static HashMap<Player, Integer> CreatingCount; // New method amount
+	public static HashMap<Player, Boolean> isPlayerBackup; // Exist player information in Backup.yml
 
 	// rTutorial Reloaded main variable
 	public static List<String> ErrorReporting; // Save error collection
 	public static rTutorialReloaded RTutorialReloaded;
-	public static Plugin plugin;
+	public static rTutorialReloaded plugin;
 	public static String Prefix = "」e[」9r」aT」butorial」e]」f ";
 	public static Economy Eco;
 	
 	// Substituted for sentance contraction
 	private ConsoleCommandSender Console = Bukkit.getConsoleSender();
 	private ConfigLoader CL = new ConfigLoader();
-	private rTutorialProgress TP = new rTutorialProgress(this);
+	private rTutorialProgress TP = new rTutorialProgress();
+	private com.ReanKR.rTutorialReloaded.Commands.rTutorialCommand rTutorialCommandClass;
 	
 	@Override
 	public void onEnable()
 	{
+		Bukkit.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(new CreateNewLocation(), this);
+	    rTutorialCommandClass = new rTutorialCommand(this);
+	    getCommand("rTutorial.main").setExecutor(rTutorialCommandClass);
 		RTutorialReloaded = this;
 		plugin = this;
 		VariableManager.InitAllVariable();
@@ -95,17 +104,5 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 	public void onDisable()
 	{
 		
-	}
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args)
-	{
-		if(cmd.getName().equalsIgnoreCase("rtutorial.main"))
-		{
-			Player player = (Player)sender;
-			TP.TutorialCooldown(player);
-			return true;
-		}
-		return false;
 	}
 }

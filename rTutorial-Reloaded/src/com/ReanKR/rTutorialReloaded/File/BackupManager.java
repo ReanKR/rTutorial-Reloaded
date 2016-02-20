@@ -3,6 +3,7 @@ package com.ReanKR.rTutorialReloaded.File;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -60,6 +61,28 @@ public class BackupManager
 			PlayerFile.save(file);
 		}
 		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static void RestorePlayer(Player p)
+	{
+		File file = new File("plugins/rTutorialReloaded/Backup.yml");
+		FileConfiguration BackupFile = FileSection.LoadFile("Backup");
+		ConfigurationSection PlayerFile = FileSection.PlusSelect(BackupFile, p.getName());
+		float WalkSpeed = Float.parseFloat(PlayerFile.get("WalkSpeed").toString());
+		float FlySpeed = Float.parseFloat(PlayerFile.get("FlySpeed").toString());
+		GameMode GM = GameMode.valueOf(PlayerFile.get("GameMode").toString());
+		p.setGameMode(GM);
+		p.setWalkSpeed(WalkSpeed);
+		p.setFlySpeed(FlySpeed);
+		FileSection.LoadFile("Backup").set(p.getName(), null);
+		try
+		{
+			BackupFile.save(file);
+		}
+		catch (IOException e)
 		{
 			e.printStackTrace();
 		}

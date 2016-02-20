@@ -10,6 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
@@ -125,7 +126,7 @@ public class ConfigLoader
 				                	if(VariableManager.IgnException(ItemNode, "Amounts")) Amounts = Integer.valueOf(ItemNode.getInt("Amounts"));
 				                	if(VariableManager.IgnException(ItemNode, "DESCRIPTION")) Lores = ItemNode.getStringList("DESCRIPTION");
 				                	if(VariableManager.IgnException(ItemNode, "ENCHANTMENT")) EnchantList = ItemNode.getStringList("ENCHANTMENT");
-				                	if(VariableManager.IgnException(ItemNode, "NAME")) DisplayName = ItemNode.getString("NAME");
+				                	if(VariableManager.IgnException(ItemNode, "NAME")) DisplayName = SubSection.RepColor(ItemNode.getString("NAME"));
 				                	if(VariableManager.IgnException(ItemNode, "DURABILITY")) Durability = Short.valueOf(ItemNode.getString("DURABILITY"));
 				                }
 				                catch (NullPointerException e)
@@ -143,10 +144,12 @@ public class ConfigLoader
 					                }
 				                }
 								ItemStack item = new MaterialData(ID, Data).toItemStack(Amounts);
-								item.getItemMeta().setDisplayName(DisplayName);
-								item.getItemMeta().setLore(Lores);
+								ItemMeta IM = item.getItemMeta();
+								IM.setDisplayName(DisplayName);
+								IM.setLore(Lores);
 								item.setDurability(Durability);
-								item.addUnsafeEnchantments(Enchantments);
+								//item.addUnsafeEnchantments(Enchantments);
+								item.setItemMeta(IM);
 								rTutorialReloaded.ResultItems.add(item);
 							}
 						}

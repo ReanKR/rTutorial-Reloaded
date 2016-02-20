@@ -26,8 +26,10 @@ public class VariableManager
 		rTutorialReloaded.ProgressingTutorial = new HashMap();
 		rTutorialReloaded.MainMessage = new HashMap();
 		rTutorialReloaded.SubMessage = new HashMap();
+		rTutorialReloaded.LocationName = new HashMap();
 		rTutorialReloaded.IsCreateNewLocation = new HashMap();
 		rTutorialReloaded.SavedNewLocation = new HashMap();
+		rTutorialReloaded.isPlayerBackup = new HashMap();
 		rTutorialReloaded.CreatingCount = new HashMap();
 		rTutorialReloaded.ErrorReporting = new ArrayList();
 		rTutorialProgress.taskID = new HashMap();

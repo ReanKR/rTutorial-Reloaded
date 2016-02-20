@@ -64,4 +64,10 @@ public class SubSection
 	{
 		p.sendMessage(SubSection.RepColor(rTutorialReloaded.Prefix + str));
 	}
+	
+	@Deprecated
+	public static void GameMsg(Player p, String Str)
+	{
+		p.sendMessage(rTutorialReloaded.Prefix + Str);
+	}
 }

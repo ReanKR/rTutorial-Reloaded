@@ -7,11 +7,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import com.ReanKR.rTutorialReloaded.rTutorialProgress;
+import com.ReanKR.rTutorialReloaded.rTutorialRegister;
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
+import com.ReanKR.rTutorialReloaded.File.BackupManager;
 import com.ReanKR.rTutorialReloaded.Util.SubSection;
 
 public class rTutorialCommand implements CommandExecutor
 {
+	private rTutorialProgress TP = new rTutorialProgress();
+	private rTutorialReloaded main;
+
+	public rTutorialCommand(rTutorialReloaded Main)
+	{
+		this.main = Main;
+	}
+
 	@Override
 	public boolean onCommand(CommandSender Sender, Command command, String label, String[] args)
 	{
@@ -41,15 +52,103 @@ public class rTutorialCommand implements CommandExecutor
 				}
 				else
 				{
-					if(args[0].equalsIgnoreCase("create"))
+					if(args[0].equalsIgnoreCase("start"))
 					{
-						
+						TP.TutorialCooldown(p);
+						return true;
+					}
+					else if(args[0].equalsIgnoreCase("create"))
+					{
+						if(args.length < 2)
+						{
+							rTutorialReloaded.IsCreateNewLocation.put(p, true);
+							SubSection.Msg(p, "메인 메세지를 대화 창을 이용해 적어주십시오.");
+							return true;
+						}
+						else
+						{
+							if(args[1].equalsIgnoreCase("save"))
+							{
+								if(rTutorialReloaded.SavedNewLocation.containsKey(p))
+								{
+									if(rTutorialReloaded.SavedNewLocation.get(p).booleanValue())
+									{
+										rTutorialRegister.LocationRegister(p.getLocation(), rTutorialReloaded.MainMessage.get(p), rTutorialReloaded.SubMessage.get(p), rTutorialReloaded.LocationName.get(p));
+										rTutorialReloaded.LocationName.remove(p);
+										rTutorialReloaded.MainMessage.remove(p);
+										rTutorialReloaded.SavedNewLocation.remove(p);
+										rTutorialReloaded.SubMessage.remove(p);
+										SubSection.SubMsg("SavedNewLocation", p, false, true);
+										return true;
+									}
+								}
+								else
+								{
+									SubSection.VariableSub(SubSection.SubMsg("NoSavedData", p, false, true), "/rt create");
+									return false;
+								}
+							}
+	
+							else if(args[1].equalsIgnoreCase("cancel"))
+							{
+								if(rTutorialReloaded.SavedNewLocation.containsKey(p))
+								{
+									if(rTutorialReloaded.SavedNewLocation.get(p).booleanValue())
+									{
+										rTutorialReloaded.LocationName.remove(p);
+										rTutorialReloaded.MainMessage.remove(p);
+										rTutorialReloaded.SavedNewLocation.remove(p);
+										rTutorialReloaded.SubMessage.remove(p);
+										SubSection.SubMsg("CancelCreateLocation", p, false, true);
+										return true;
+									}
+								}
+								else
+								{
+									SubSection.SubMsg("NoCancel", p, false, true);
+									return false;
+								}
+							}
+						}
+					}
+					else if(args[0].equalsIgnoreCase("continue"))
+					{
+						if(rTutorialReloaded.isPlayerBackup.containsKey(p))
+						{
+							if(rTutorialReloaded.isPlayerBackup.get(p).booleanValue())
+							{
+								TP.TutorialCooldown(p);
+								return true;
+							}
+						}
+						else
+						{
+							SubSection.SubMsg("NoContinue", p, false, true);
+							return false;
+						}
+					}
+					else if(args[0].equalsIgnoreCase("Cancel"))
+					{
+						if(rTutorialReloaded.isPlayerBackup.containsKey(p))
+						{
+							if(rTutorialReloaded.isPlayerBackup.get(p).booleanValue())
+							{
+								BackupManager.RestorePlayer(p);
+								rTutorialReloaded.isPlayerBackup.remove(p);
+								return true;
+							}
+						}
+						else
+						{
+							SubSection.SubMsg("NoCancel", p, false, true);
+							return false;
+						}
 					}
 				}
 			}
 			else
 			{
-				SubSection.SubMsg("UnknownCommand", p, true, true);
+				SubSection.SubMsg("UnknownCommand", p, false, true);
 				return false;
 			}
 		}
