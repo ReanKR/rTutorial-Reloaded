@@ -91,7 +91,7 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 		RTutorialReloaded = this;
 		plugin = this;
 		VariableManager.InitAllVariable();
-		CL.LoadCfg();
+		ConfigLoader.LoadCfg(true);
 		CL.LoadMessage();
 		LocationLoader.LocationCfg();
 		Eco = EconomyAPI.getEconomy();

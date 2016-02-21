@@ -11,7 +11,6 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
 import com.ReanKR.rTutorialReloaded.File.BackupManager;
@@ -39,7 +38,6 @@ public class rTutorialProgress
 	@SuppressWarnings("deprecation")
 	public void TutorialCooldown(final Player p)
 	{
-		rTutorialReloaded.plugin.getServer().getConsoleSender().sendMessage("rds");
 		final int tid = rTutorialReloaded.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(rTutorialReloaded.plugin, new Runnable()
 		{
 			@Override
@@ -49,12 +47,8 @@ public class rTutorialProgress
 				{
 					Bukkit.getConsoleSender().sendMessage("Tutorial can't running : Player Leaved");
 					if(rTutorialReloaded.CompatiblePlugins[0]) BarAPI.removeBar(p);
-					PlayerGameMode.put(p.getName(), p.getGameMode());
-					PlayerSpeed.put(p.getName(), p.getWalkSpeed());
-					PlayerFlySpeed.put(p.getName(), p.getFlySpeed());
-					BackupManager.SaveUnexpected(p);
 					HidePlayer(p, false);
-					endTask(p, true);
+					endTask(p, false);
 					return;
 				}
 				
@@ -162,6 +156,7 @@ public class rTutorialProgress
 		{
 			if(rTutorialReloaded.isPlayerBackup.get(p).booleanValue())
 			{
+				rTutorialReloaded.isPlayerBackup.remove(p);
 				RestoreLocation(p);
 			}
 		}
@@ -239,7 +234,7 @@ public class rTutorialProgress
 	{
 		if(taskID.containsKey(p.getName()))
 		{
-			int tid = taskID.get(p.getName());
+			int tid = taskID.get(p.getName() );
 			rTutorialReloaded.plugin.getServer().getScheduler().cancelTask(tid);
 			taskID.remove(p.getName());
 			Progress.remove(p.getName());
@@ -247,6 +242,9 @@ public class rTutorialProgress
 
 		if(CompleteTutorial)
 		{
+			rTutorialProgress.LocationProgress.remove(p.getName());
+			rTutorialProgress.ListHidePlayer.remove(p.getName());
+			rTutorialProgress.Progress.remove(p.getName());
 			BarAPI.removeBar(p);
 			HidePlayer(p, false);
 			p.setGameMode(PlayerGameMode.get(p.getName()));

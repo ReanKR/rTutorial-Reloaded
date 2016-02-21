@@ -27,8 +27,8 @@
 #     - "&aThis is gold ingot. so rich!"
 #     - "&a[Tutorial Completed Rewards]"
 #     ENCHANTMENT:
-#     - "PROTECTION, 1"
-#     - "BLAST_PROTECTION, 1"
+#     - "PROTECTION_FIRE, 1"
+#     - "PROTECTION_BLAST, 1"
 #
 # New supported method type: Descrption, Enchantment, DisplayName
 # Required method type: ID
@@ -58,7 +58,7 @@ Result:
   Run-Commands: true
   Reward-Items: true
   Commands:
-  - 'Console: broadcast %player% Tutorial Complete.'
+  - 'Console: say %player% Tutorial Complete.'
   - 'Money: 100'
   - 'spawn'
   Items:
@@ -79,4 +79,4 @@ Result:
       - "&aUser: What is it?"
       - "&eServer: &9I don't know. lol"
       ENCHANTMENT:
-      - PROTECTION, 1
+      - PROTECTION_FIRE, 1

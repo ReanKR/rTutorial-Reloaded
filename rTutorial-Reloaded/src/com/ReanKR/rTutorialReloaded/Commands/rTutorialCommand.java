@@ -11,6 +11,7 @@ import com.ReanKR.rTutorialReloaded.rTutorialProgress;
 import com.ReanKR.rTutorialReloaded.rTutorialRegister;
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
 import com.ReanKR.rTutorialReloaded.File.BackupManager;
+import com.ReanKR.rTutorialReloaded.File.ConfigLoader;
 import com.ReanKR.rTutorialReloaded.Util.SubSection;
 
 public class rTutorialCommand implements CommandExecutor
@@ -34,25 +35,28 @@ public class rTutorialCommand implements CommandExecutor
 			{
 				if(args.length < 1)
 				{
-					Msg(p, "&a========== &9r&aT&butorial&cR&feloaded &a" + rTutorialReloaded.plugin.getDescription().getVersion() + "==========");
+					Msg(p, "&a========== &9r&aT&butorial&cR&feloaded &b" + rTutorialReloaded.plugin.getDescription().getVersion() + "&a ==========");
 					Msg(p, " ");
-					Msg(p, "&6/rt | rtutorial : Show rTutorialrReloaded all commands");
+					Msg(p, "&6/rt | rtutorial &f: &bShow rTutorialReloaded all commands");
 					Msg(p, "&6/rt | rtutorial &aenable &f: &dEnable tutorial system.");
 					Msg(p, "&6/rt | rtutorial &astart &f: &dstart tutorial.");
-					Msg(p, "");
+					Msg(p, "&6/rt | rtutorial &ccancel &f: &dcancel progressing tutorial.");
+					Msg(p, "&6/rt | rtutorial &econtinue &f: &dcontinue progressing tutorial.");
+					Msg(p, " ");
 					Msg(p, "&6/rt | rtutorial &fcreate &f: &dCreating new tutorial location.");
 					Msg(p, "&6/rt | rtutorial &fcreate &ccancel &f: &dCancel to Create tutorial location.");
 					Msg(p, "&6/rt | rtutorial &fcreate &asave &f: &dSave to create tutorial location.");
-					Msg(p, "");
-					Msg(p, "&6/rt | rtutorial &3list &f: &dshow location list.");
-					Msg(p, "&6/rt | rtutorial &3remove &9[Name] &f: &ddelete index name saved location list.");
 					Msg(p, " ");
-					Msg(p, "&a========== &9r&aT&butorial&cR&feloaded &a" + rTutorialReloaded.plugin.getDescription().getVersion() + "==========");
+					Msg(p, "&a========== &9r&aT&butorial&cR&feloaded &b" + rTutorialReloaded.plugin.getDescription().getVersion() + "&a ==========");
 					return true;
 				}
 				else
 				{
-					if(args[0].equalsIgnoreCase("start"))
+					if(args[0].equalsIgnoreCase("enable"))
+					{
+						ConfigLoader.TutorialEnable(p);
+					}
+					else if(args[0].equalsIgnoreCase("start"))
 					{
 						TP.TutorialCooldown(p);
 						return true;
@@ -84,7 +88,7 @@ public class rTutorialCommand implements CommandExecutor
 								}
 								else
 								{
-									SubSection.VariableSub(SubSection.SubMsg("NoSavedData", p, false, true), "/rt create");
+									SubSection.Msg(p, (SubSection.VariableSub(SubSection.SubMsg("NoSavedData", p, true, false), "/rt create")));
 									return false;
 								}
 							}
@@ -144,12 +148,12 @@ public class rTutorialCommand implements CommandExecutor
 							return false;
 						}
 					}
+					else
+					{
+						SubSection.SubMsg("UnknownCommand", p, false, true);
+						return false;
+					}
 				}
-			}
-			else
-			{
-				SubSection.SubMsg("UnknownCommand", p, false, true);
-				return false;
 			}
 		}
 		else

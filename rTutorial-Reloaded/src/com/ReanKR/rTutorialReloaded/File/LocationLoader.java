@@ -1,5 +1,7 @@
 package com.ReanKR.rTutorialReloaded.File;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -11,11 +13,36 @@ import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
 
 public class LocationLoader
 {
-	public static void LocationCfg()
+	public static boolean LocationCfg()
 	{
-		FileConfiguration LocationYaml = FileSection.LoadFile("Location");
-		ConfigurationSection CS = LocationYaml.getConfigurationSection("Locations");
-		Set<String> Information = CS.getKeys(false);
+		FileConfiguration LocationFile = FileSection.LoadFile("Location");
+		File file = new File("plugins/rTutorialReloaded/Location.yml");
+		ConfigurationSection CS = null;
+		Set<String> Information;
+		if(LocationFile.contains("Locations") == false)
+		{
+			LocationFile.createSection("Locations");
+		}
+		try
+		{
+			LocationFile.save(file);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			CS = LocationFile.getConfigurationSection("Locations");
+			Information = CS.getKeys(false);
+		}
+		catch(NullPointerException e)
+		{
+			e.printStackTrace();
+	    	Bukkit.getConsoleSender().sendMessage(rTutorialReloaded.Prefix + "Location.yml is empty. Please set the location at first before tutorial enabling.");
+	    	rTutorialReloaded.ErrorReporting.add("Location.yml - File is empty");
+	    	return false;
+		}
 	    int MethodAmount = 0;
 	    try
 	    {
@@ -96,9 +123,11 @@ public class LocationLoader
 	    }
 	    catch(NullPointerException e)
 	    {
-	    	Bukkit.getConsoleSender().sendMessage(rTutorialReloaded.Prefix + "Location.yml is empty. Please set the location at first before tutorial enabling.");
-	    	rTutorialReloaded.ErrorReporting.add("Location.yml - File is empty");
+	    	Bukkit.getConsoleSender().sendMessage(rTutorialReloaded.Prefix + "Location.yml is empty or include wrong method. Please set the location at first before tutorial enabling.");
+	    	rTutorialReloaded.ErrorReporting.add("Location.yml - File is empty or include wrong method");
+	    	return false;
 	    }
 	    rTutorialReloaded.MethodAmount = MethodAmount;
+	    return true;
 	}
 }

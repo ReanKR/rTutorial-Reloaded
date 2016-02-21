@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 public class FileSection
 {
@@ -45,5 +46,10 @@ public class FileSection
 	public static ConfigurationSection PlusSelect(ConfigurationSection CS, String Name)
 	{
 		return CS.getConfigurationSection(Name);
+	}
+	
+	public static ConfigurationSection PlayerSection(Player p)
+	{
+		return LoadFile("Player").getConfigurationSection(p.getName());
 	}
 }

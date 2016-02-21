@@ -1,14 +1,16 @@
 package com.ReanKR.rTutorialReloaded.File;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
@@ -22,8 +24,31 @@ import com.ReanKR.rTutorialReloaded.Util.VariableManager;
 public class ConfigLoader
 {
 	public static rTutorialReloaded plugin = rTutorialReloaded.RTutorialReloaded;
+	
+	public static void TutorialEnable(Player p)
+	{
+		if(LocationLoader.LocationCfg())
+		{
+			File file = new File("plugins/rTutorialReloaded/config.yml");
+			YamlConfiguration ConfigFile = YamlConfiguration.loadConfiguration(file);
+			ConfigurationSection Section = ConfigFile.getConfigurationSection("Main");
+			Section.set("Edit-Complete", !(rTutorialReloaded.EditComplete));
+			try {
+				ConfigFile.save(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			SubSection.Msg(p,SubSection.VariableSub(SubSection.SubMsg("NotExistLocation", p, true, false), "/rt create"));
+			return;
+		}
+		LoadCfg(false);
+	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
-	public void LoadCfg()
+	public static void LoadCfg(boolean isPluginLoad)
 	{
 		FileSection.LoadFile("Enchantments");
 		FileConfiguration ConfigFile = FileSection.LoadFile("config");
@@ -80,7 +105,10 @@ public class ConfigLoader
 				}
 				else if(Str.equalsIgnoreCase("Compatibles"))
 				{
-					PluginManager.PluginChecking(MainNode);
+					if(isPluginLoad)
+					{
+						PluginManager.PluginChecking(MainNode);
+					}
 				}
 				
 				else if(Str.equalsIgnoreCase("Exception-Commands"))
@@ -116,7 +144,6 @@ public class ConfigLoader
 				                byte Data = 0;
 								List<String> Lores = new ArrayList();
 								List<String> EnchantList = new ArrayList();
-				                Map<Enchantment, Integer> Enchantments = new HashMap();
 				                String DisplayName = null;
 				                short Durability = 0;
 				                try
@@ -124,7 +151,7 @@ public class ConfigLoader
 				                	if(VariableManager.IgnException(ItemNode, "ID")) ID = Integer.valueOf(ItemNode.getInt("ID"));
 				                	if(VariableManager.IgnException(ItemNode, "DATA-VALUE")) Data = Byte.parseByte(ItemNode.getString("DATA-VALUE"));
 				                	if(VariableManager.IgnException(ItemNode, "Amounts")) Amounts = Integer.valueOf(ItemNode.getInt("Amounts"));
-				                	if(VariableManager.IgnException(ItemNode, "DESCRIPTION")) Lores = ItemNode.getStringList("DESCRIPTION");
+				                	if(VariableManager.IgnException(ItemNode, "DESCRIPTION")) Lores = SubSection.RepColorList(ItemNode.getStringList("DESCRIPTION"));
 				                	if(VariableManager.IgnException(ItemNode, "ENCHANTMENT")) EnchantList = ItemNode.getStringList("ENCHANTMENT");
 				                	if(VariableManager.IgnException(ItemNode, "NAME")) DisplayName = SubSection.RepColor(ItemNode.getString("NAME"));
 				                	if(VariableManager.IgnException(ItemNode, "DURABILITY")) Durability = Short.valueOf(ItemNode.getString("DURABILITY"));
@@ -135,20 +162,19 @@ public class ConfigLoader
 				                  continue;
 				                }
 				                
+								ItemStack item = new MaterialData(ID, Data).toItemStack(Amounts);
+								ItemMeta IM = item.getItemMeta();
+								IM.setDisplayName(DisplayName);
+								IM.setLore(Lores);
 				                if(! EnchantList.isEmpty())
 				                {
 					                for(String Enchant : EnchantList)
 					                {
 					                	String[] Filter = Enchant.split(", ");
-					                	Enchantments.put(Enchantment.getByName(Filter[0]), Integer.valueOf(Filter[1]));
+					                	IM.addEnchant(Enchantment.getByName(Filter[0]), Integer.valueOf(Filter[1]), true);
 					                }
 				                }
-								ItemStack item = new MaterialData(ID, Data).toItemStack(Amounts);
-								ItemMeta IM = item.getItemMeta();
-								IM.setDisplayName(DisplayName);
-								IM.setLore(Lores);
 								item.setDurability(Durability);
-								//item.addUnsafeEnchantments(Enchantments);
 								item.setItemMeta(IM);
 								rTutorialReloaded.ResultItems.add(item);
 							}

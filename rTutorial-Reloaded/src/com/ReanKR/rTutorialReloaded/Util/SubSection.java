@@ -1,5 +1,8 @@
 package com.ReanKR.rTutorialReloaded.Util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -28,6 +31,17 @@ public class SubSection
 		return replace;
 	}
 	
+	public static List<String> RepColorList(List<String> Str)
+	{
+		List<String> StringList = new ArrayList<String>();
+		for(String string : Str)
+		{
+			String replace = ChatColor.translateAlternateColorCodes('&', string);
+			StringList.add(replace);
+		}
+		return StringList;
+	}
+	
 	public static String VariableSub(String str, Object object)
 	{
 		String replace = str.replaceAll("%var%", String.valueOf(object));
@@ -45,7 +59,7 @@ public class SubSection
 	/* Return을 true로 하면 문자열을 반환하고,false라면 플레이어에게 메세지를 출력하도록 한다. */ 
 	public static String SubMsg(String MessageMethod, Player player, Boolean Return, Boolean AddPrefix)
 	{
-	    String Message = (String)rTutorialReloaded.SystemMessage.get(MessageMethod);
+	    String Message = rTutorialReloaded.SystemMessage.get(MessageMethod).toString();
 	    String Replacement = Message.replaceAll("%player%", player.getName());
 	    if(Return)
 	    {
