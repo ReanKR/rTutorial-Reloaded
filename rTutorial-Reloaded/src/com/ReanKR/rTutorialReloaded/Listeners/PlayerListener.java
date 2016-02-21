@@ -3,6 +3,7 @@ package com.ReanKR.rTutorialReloaded.Listeners;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -54,8 +55,8 @@ public class PlayerListener implements Listener
 		if(BackupSection.contains(p.getName()))
 		{
 			SubSection.SubMsg("ContinueTutorial", p, false, true);
-			SubSection.VariableSub(SubSection.SubMsg("ContinueCommand", p, true, true), "/rt continue");
-			SubSection.VariableSub(SubSection.SubMsg("CancelCommand", p, true, true), "/rt cancel");
+			SubSection.Msg(p, SubSection.VariableSub(SubSection.SubMsg("ContinueCommand", p, true, false), "/rt continue"));
+			SubSection.Msg(p, SubSection.VariableSub(SubSection.SubMsg("CancelCommand", p, true, false), "/rt cancel"));
 			rTutorialReloaded.isPlayerBackup.put(p, true);
 		}
 	}
@@ -79,7 +80,6 @@ public class PlayerListener implements Listener
 			}
 			catch(NullPointerException e)
 			{
-				e.printStackTrace();
 				PlayerFile.createSection(p.getName());
 				ConfigurationSection Section = PlayerFile.getConfigurationSection(p.getName());
 				Section.set("UUID", p.getUniqueId().toString());

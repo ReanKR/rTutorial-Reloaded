@@ -58,8 +58,17 @@ public class rTutorialCommand implements CommandExecutor
 					}
 					else if(args[0].equalsIgnoreCase("start"))
 					{
-						TP.TutorialCooldown(p);
-						return true;
+						if(rTutorialReloaded.EditComplete)
+						{
+							TP.TutorialCooldown(p);
+							return true;
+						}
+						else
+						{
+							SubSection.SubMsg("CannotStartTutorial", p, false, true);
+							SubSection.SubMsg("NotEnabledTutorial", p, false, true);
+							return true;
+						}
 					}
 					else if(args[0].equalsIgnoreCase("create"))
 					{
@@ -107,6 +116,15 @@ public class rTutorialCommand implements CommandExecutor
 										return true;
 									}
 								}
+								else if(rTutorialReloaded.IsCreateNewLocation.containsKey(p))
+								{
+									rTutorialReloaded.IsCreateNewLocation.remove(p);
+									rTutorialReloaded.SubMessage.remove(p);
+									rTutorialReloaded.MainMessage.remove(p);
+									rTutorialReloaded.LocationName.remove(p);
+									SubSection.SubMsg("CancelCreateLocation", p, false, true);
+									return true;
+								}
 								else
 								{
 									SubSection.SubMsg("NoCancel", p, false, true);
@@ -127,7 +145,7 @@ public class rTutorialCommand implements CommandExecutor
 						}
 						else
 						{
-							SubSection.SubMsg("NoContinue", p, false, true);
+							SubSection.SubMsg("NoExistContinueData", p, false, true);
 							return false;
 						}
 					}
@@ -144,7 +162,7 @@ public class rTutorialCommand implements CommandExecutor
 						}
 						else
 						{
-							SubSection.SubMsg("NoCancel", p, false, true);
+							SubSection.SubMsg("NoExistContinueData", p, false, true);
 							return false;
 						}
 					}
@@ -159,6 +177,9 @@ public class rTutorialCommand implements CommandExecutor
 		else
 		{
 			ConsoleCommandSender Console = Bukkit.getConsoleSender();
+			Console.sendMessage(rTutorialReloaded.Prefix + "Version : " + rTutorialReloaded.plugin.getDescription().getVersion());
+			Console.sendMessage(rTutorialReloaded.Prefix + "This version not supported console commands.");
+			return false;
 		}
 		return false;
 	}

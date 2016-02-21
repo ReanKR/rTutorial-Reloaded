@@ -2,6 +2,7 @@ package com.ReanKR.rTutorialReloaded.Listeners;
 
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -57,10 +58,13 @@ public class CreateNewLocation implements Listener
 		{
 			if(rTutorialReloaded.IsCreateNewLocation.get(e.getPlayer()).booleanValue())
 			{
-				SC.PlayerSound(e.getPlayer(), Sound.ANVIL_LAND, 1.2F, 1.7F);
-				SubSection.SubMsg("BlockCommandWhenCreate", e.getPlayer(), false, true);
-				SubSection.Msg(e.getPlayer(), (SubSection.VariableSub(SubSection.SubMsg("CancelCommand", e.getPlayer(), true, false), "/rt set cancel")));
-				e.setCancelled(true);
+				if(!(e.getMessage().equalsIgnoreCase("/rt create cancel") || e.getMessage().equalsIgnoreCase("/rtutorial create cancel")))
+				{
+					SC.PlayerSound(e.getPlayer(), Sound.ANVIL_LAND, 1.2F, 1.7F);
+					SubSection.SubMsg("BlockCommandWhenCreate", e.getPlayer(), false, true);
+					SubSection.Msg(e.getPlayer(), (SubSection.VariableSub(SubSection.SubMsg("CancelCommand", e.getPlayer(), true, false), "/rt create cancel")));
+					e.setCancelled(true);
+				}
 			}
 		}
 	}

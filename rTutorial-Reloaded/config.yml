@@ -12,10 +12,11 @@
 # Required Economy plugin.
 #
 # 'spawn'
-# -> The player run command "spawn" when tutorial complete and has permission.
+# -> The player run command "spawn" when tutorial complete and need permission that command.
 #
 # 'OP: say I'm Complete!'
-# -> The player run command "say I'm Complete!" when tutorial complete and don't have to permission, because of using OP permission.
+# -> The player run command "say I'm Complete!" when tutorial complete and don't have to permission because of using OP permission.
+# (Will support next version)
 #
 # rTutorialReloaded also support custom-items. For example,
 #   Example:
@@ -53,7 +54,7 @@ Compatibles:
   Economy: false
 # ingore command when tutorial progress 
 Exception-Commands:
-  - 'rt cancel'
+  - 'ExampleCommand'
 Result:
   Run-Commands: true
   Reward-Items: true

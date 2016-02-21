@@ -6,11 +6,12 @@
 # %var% : Object variable or call other function
 # If the sentance include variable "%var", Don't delete it.
 Messages:
+  BroadcastTutorialComplete: "%player%님이 튜토리얼을 완료하셨습니다."
   BarAPIReady: "튜토리얼이 잠시 후 시작됩니다."
   BarAPIPercent: "튜토리얼 진행 %var%% 완료"
   UnknownCommand: "알수 없는 명령어입니다. /rt"
   FirstJoin: "%player%님 환영합니다! 처음 방문이라면 /rt start를 사용해 서버에서 제공하는 튜토리얼을 해보십시오!"
-  NotCompleteTutorial: "&c튜토리얼을 완료하지 않았습니다."
+  CannotStartTutorial: "&c튜토리얼을 시작할 수 없습니다."
   CompleteTutorial: "&a튜토리얼을 완료하였습니다."
   CompleteCreatingMethod: "&a메세지가 임시 저장되었습니다. 해당 명령어를 치면 저장되고, 위치는 플레이어가 마지막으로 서 있는 곳이 지정됩니다."
   SavedNewLocation: "새로운 위치 정보가 저장되었습니다."
@@ -27,5 +28,11 @@ Messages:
   NoContinue: "이어서 플레이할 수 있는 기록이 없습니다."
   NoCancel: "취소할 위치 정보가 없습니다."
   NoSavedData: "저장할 위치 정보가 없습니다. 위치를 새로 만들려면 %var%"
+  NoExistContinueData: "중간에 이어서 할 튜토리얼 정보가 없습니다."
+  NotEnabledTutorial: "튜토리얼이 활성화되지 않았습니다."
   CancelCreateLocation: "등록을 취소했습니다. 임시로 저장된 위치 정보가 삭제되었습니다."
   NotExistLocation: "저장된 위치가 한 개도 없어서 튜토리얼 활성화가 불가합니다. %var%"
+  FirstCompleteTutorial: "처음으로 완료하여 다음과 같은 보상을 받았습니다."
+  EnableTutorial: "튜토리얼이 정상적으로 %var% 되었습니다."
+  WordEnabled: "활성화"
+  WordDisabled: "비활성화"

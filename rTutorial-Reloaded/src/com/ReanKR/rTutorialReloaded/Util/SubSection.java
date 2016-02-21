@@ -55,7 +55,11 @@ public class SubSection
 		return replace;
 	}
 	
-	
+	public static String MessageString(String MessageMethod)
+	{
+	    String Message = rTutorialReloaded.SystemMessage.get(MessageMethod).toString();
+	    return Message;
+	}
 	/* Return을 true로 하면 문자열을 반환하고,false라면 플레이어에게 메세지를 출력하도록 한다. */ 
 	public static String SubMsg(String MessageMethod, Player player, Boolean Return, Boolean AddPrefix)
 	{

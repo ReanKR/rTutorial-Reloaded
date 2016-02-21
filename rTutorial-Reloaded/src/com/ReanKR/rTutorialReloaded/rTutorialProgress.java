@@ -175,27 +175,50 @@ public class rTutorialProgress
 	
 	public void Result(final Player p)
 	{
-		for(String Commands : rTutorialReloaded.ResultCommands)
+		SubSection.SubMsg("CompleteTutorial", p, false, true);
+		if(!(FileSection.PlayerSection(p).getBoolean("Finished")))
 		{
-			String[] Cutter = Commands.split(": ");
-			if(Commands.contains("Console"))
+			if(rTutorialReloaded.BroadcastCompleteTutorial)
 			{
-				rTutorialReloaded.plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), SubSection.Sub(Cutter[1], p));
+				Bukkit.broadcastMessage(rTutorialReloaded.Prefix + SubSection.Sub(SubSection.MessageString("BroadcastTutorialComplete"), p));
 			}
-			
-			else if(Commands.contains("Money"))
+			if(rTutorialReloaded.RunCommands)
 			{
-				Economy Echo = com.ReanKR.rTutorialReloaded.Listeners.EconomyAPI.getEconomy();
-				Echo.depositPlayer(p, Double.parseDouble(Cutter[1]));
+				for(String Commands : rTutorialReloaded.ResultCommands)
+				{
+					String[] Cutter = Commands.split(": ");
+					if(Commands.contains("Console"))
+					{
+						rTutorialReloaded.plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), SubSection.Sub(Cutter[1], p));
+					}
+					
+					else if(Commands.contains("Money"))
+					{
+						Economy Echo = com.ReanKR.rTutorialReloaded.Listeners.EconomyAPI.getEconomy();
+						Echo.depositPlayer(p, Double.parseDouble(Cutter[1]));
+						SubSection.Msg(p, "돈을 받았습니다. " + Cutter[1] + " " + Echo.currencyNamePlural());
+					}
+					else
+					{
+						rTutorialReloaded.plugin.getServer().dispatchCommand(p, SubSection.Sub(Commands, p));
+					}
+				}
 			}
-			else
+			if(rTutorialReloaded.RewardItems)
 			{
-				rTutorialReloaded.plugin.getServer().dispatchCommand(p, SubSection.Sub(Commands, p));
+				SubSection.SubMsg("FirstCompleteTutorial", p, false, true);
+				for(ItemStack Items : rTutorialReloaded.ResultItems)
+				{
+					String ItemName = null;
+					p.getInventory().addItem(Items);
+					ItemName = Items.getItemMeta().getDisplayName();
+					if(! Items.getItemMeta().hasDisplayName())
+					{
+						ItemName = Items.getType().name();
+					}
+					SubSection.Msg(p, "아이템 : " + ItemName + " x" + Items.getAmount());
+				}
 			}
-		}
-		for(ItemStack Items : rTutorialReloaded.ResultItems)
-		{
-			p.getInventory().addItem(Items);
 		}
 		rTutorialReloaded.ProgressingTutorial.put(p.getName(), "COMPLETE");
 		BackupManager.SetPlayerProgress(p);

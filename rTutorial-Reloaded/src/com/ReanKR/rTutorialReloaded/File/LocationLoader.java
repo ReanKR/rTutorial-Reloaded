@@ -35,6 +35,10 @@ public class LocationLoader
 		{
 			CS = LocationFile.getConfigurationSection("Locations");
 			Information = CS.getKeys(false);
+			if(Information.isEmpty() || Information.size() == 0)
+			{
+				return false;
+			}
 		}
 		catch(NullPointerException e)
 		{

@@ -38,6 +38,9 @@ public class ConfigLoader
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			SubSection.Msg(p,SubSection.VariableSub(SubSection.SubMsg
+					("EnableTutorial", p, true, false), !(rTutorialReloaded.EditComplete) ? SubSection.MessageString("WordEnabled")
+							: SubSection.MessageString("WordDisabled")));
 		}
 		else
 		{
