@@ -49,17 +49,25 @@ public class PluginManager extends JavaPlugin
 			Economy echo = EconomyAPI.getEconomy();
 			if(Node.getBoolean("Economy"))
 			{
-				if(! echo.isEnabled())
+				try
+				{
+					if(! echo.isEnabled())
+					{
+						rTutorialReloaded.ErrorReporting.add("config.yml, Compatibles, Economy API not hooked");
+						SwitchCompatiblePlugin("Economy");
+					}
+					else
+					{
+						if(Node.getBoolean("Economy"))
+						{
+							server.getConsoleSender().sendMessage(rTutorialReloaded.Prefix + ChatColor.GREEN + echo.getName() + " Hooked");
+						}
+					}
+				}
+				catch(NullPointerException e)
 				{
 					rTutorialReloaded.ErrorReporting.add("config.yml, Compatibles, Economy API not hooked");
 					SwitchCompatiblePlugin("Economy");
-				}
-				else
-				{
-					if(Node.getBoolean("Economy"))
-					{
-						server.getConsoleSender().sendMessage(rTutorialReloaded.Prefix + ChatColor.GREEN + echo.getName() + " Hooked");
-					}
 				}
 			}
 		}

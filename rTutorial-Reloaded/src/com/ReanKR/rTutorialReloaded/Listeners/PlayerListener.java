@@ -3,7 +3,7 @@ package com.ReanKR.rTutorialReloaded.Listeners;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.ReanKR.rTutorialReloaded.rTutorialProgress;
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
@@ -47,17 +48,29 @@ public class PlayerListener implements Listener
 	}*/
 	
 	@EventHandler
+	public void WorldChange(PlayerTeleportEvent e)
+	{
+		if(!(e.getFrom().getWorld().getName().equalsIgnoreCase(e.getTo().getWorld().getName())) && rTutorialProgress.taskID.containsKey(e.getPlayer().getName()))
+		{
+			e.getPlayer().setWalkSpeed(0.0F);
+			e.getPlayer().setFlySpeed(0.0F);
+			e.getPlayer().setGameMode(GameMode.SPECTATOR);
+		}
+	}
+
+	@EventHandler
 	public void PlayerJoin(PlayerJoinEvent e)
 	{
 		Player p = e.getPlayer();
 		FirstJoinPlayer(p);
-		ConfigurationSection BackupSection = FileSection.LoadFile("Backup");
-		if(BackupSection.contains(p.getName()))
+		if(rTutorialReloaded.isPlayerBackup.containsKey(p.getName()))
 		{
-			SubSection.SubMsg("ContinueTutorial", p, false, true);
-			SubSection.Msg(p, SubSection.VariableSub(SubSection.SubMsg("ContinueCommand", p, true, false), "/rt continue"));
-			SubSection.Msg(p, SubSection.VariableSub(SubSection.SubMsg("CancelCommand", p, true, false), "/rt cancel"));
-			rTutorialReloaded.isPlayerBackup.put(p, true);
+			if(rTutorialReloaded.isPlayerBackup.get(p.getName()).booleanValue())
+			{
+				SubSection.Msg(p, SubSection.MessageString("ContinueTutorial"));
+				SubSection.Msg(p, SubSection.VariableSub(SubSection.SubMsg("ContinueCommand", p, true, false), "/rt continue"));
+				SubSection.Msg(p, SubSection.VariableSub(SubSection.SubMsg("CancelCommand", p, true, false), "/rt cancel"));
+			}
 		}
 	}
 	

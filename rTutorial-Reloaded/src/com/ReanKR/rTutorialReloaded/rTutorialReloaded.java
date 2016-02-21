@@ -6,17 +6,16 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.ReanKR.rTutorialReloaded.Commands.rTutorialCommand;
+import com.ReanKR.rTutorialReloaded.File.BackupManager;
 import com.ReanKR.rTutorialReloaded.File.ConfigLoader;
+import com.ReanKR.rTutorialReloaded.File.DisableManager;
 import com.ReanKR.rTutorialReloaded.File.LocationLoader;
 import com.ReanKR.rTutorialReloaded.Listeners.CreateNewLocation;
 import com.ReanKR.rTutorialReloaded.Listeners.EconomyAPI;
@@ -66,7 +65,7 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 	public static HashMap<Player, Boolean> IsCreateNewLocation;  // Enabled Blocking AsyncChatEvent when creating new data
 	public static HashMap<Player, Boolean> SavedNewLocation; // Finished creating all progress
 	public static HashMap<Player, Integer> CreatingCount; // New method amount
-	public static HashMap<Player, Boolean> isPlayerBackup; // Exist player information in Backup.yml
+	public static HashMap<String, Boolean> isPlayerBackup; // Exist player information in Backup.yml
 
 	// rTutorial Reloaded main variable
 	public static List<String> ErrorReporting; // Save error collection
@@ -91,6 +90,7 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 		RTutorialReloaded = this;
 		plugin = this;
 		VariableManager.InitAllVariable();
+		BackupManager.ScarchhasBackup();
 		ConfigLoader.LoadCfg(true);
 		CL.LoadMessage();
 		LocationLoader.LocationCfg();
@@ -103,6 +103,7 @@ public class rTutorialReloaded extends JavaPlugin implements Listener
 	@Override
 	public void onDisable()
 	{
-		
+		Bukkit.getConsoleSender().sendMessage(Prefix + "Restoring Player that progress tutorial...");
+		DisableManager.DisablePlugin();
 	}
 }

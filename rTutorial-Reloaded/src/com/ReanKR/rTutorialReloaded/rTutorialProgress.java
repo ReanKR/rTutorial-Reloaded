@@ -20,6 +20,7 @@ import com.ReanKR.rTutorialReloaded.Util.SubSection;
 import com.connorlinfoot.titleapi.TitleAPI;
 
 import me.confuser.barapi.BarAPI;
+import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -45,7 +46,6 @@ public class rTutorialProgress
 			{
 				if(! rTutorialReloaded.plugin.getServer().getOfflinePlayer(p.getName()).isOnline()) // if player leaved server when tutorial progressing
 				{
-					Bukkit.getConsoleSender().sendMessage("Tutorial can't running : Player Leaved");
 					if(rTutorialReloaded.CompatiblePlugins[0]) BarAPI.removeBar(p);
 					HidePlayer(p, false);
 					endTask(p, false);
@@ -54,9 +54,9 @@ public class rTutorialProgress
 				
 				if(Progress.get(p.getName()) <= 0)
 				{
-					if(rTutorialReloaded.isPlayerBackup.containsKey(p))
+					if(rTutorialReloaded.isPlayerBackup.containsKey(p.getName()))
 					{
-						if(rTutorialReloaded.isPlayerBackup.get(p).booleanValue())
+						if(rTutorialReloaded.isPlayerBackup.get(p.getName()).booleanValue())
 						{
 							float WalkSpeed = Float.parseFloat(FileSection.PlusSelect(FileSection.LoadFile("Backup"), p.getName()).get("WalkSpeed").toString());
 							float FlySpeed = Float.parseFloat(FileSection.PlusSelect(FileSection.LoadFile("Backup"), p.getName()).get("FlySpeed").toString());
@@ -115,6 +115,18 @@ public class rTutorialProgress
 	{
 		ConfigurationSection Section = FileSection.LoadFile("Location").getConfigurationSection("Locations");
 		Object[] LocationName = Section.getKeys(false).toArray();
+		if(rTutorialReloaded.isPlayerBackup.containsKey(p.getName()))
+		{
+			if(rTutorialReloaded.isPlayerBackup.get(p.getName()).booleanValue())
+			{
+				rTutorialReloaded.isPlayerBackup.remove(p.getName());
+				RestoreLocation(p);
+			}
+		}
+		else
+		{
+			Progress.put(p.getName(), 0.0F);
+		}
 		final int tid = rTutorialReloaded.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(rTutorialReloaded.plugin, new Runnable()
 		{
 			@Override
@@ -122,18 +134,16 @@ public class rTutorialProgress
 			{
 				if(! rTutorialReloaded.plugin.getServer().getOfflinePlayer(p.getName()).isOnline()) // if player leaved server when tutorial progressing
 				{
-					Bukkit.getConsoleSender().sendMessage("Tutorial can't running : Player Leaved");
 					if(rTutorialReloaded.CompatiblePlugins[0]) BarAPI.removeBar(p);
 					BackupManager.SaveUnexpected(p);
 					HidePlayer(p, false);
-					endTask(p, true);
+					endTask(p, false);
 					return;
 				}
 				
 				if(Progress.get(p.getName()).intValue() >= rTutorialReloaded.MethodAmount)
 				{
 					BarAPI.removeBar(p);
-					BarAPI.setMessage(p, "§a" + SubSection.VariableSub(SubSection.SubMsg("BarAPIPercent", p, true, false), 100) , 100);
 					endTask(p, true);
 					Result(p);
 					return;
@@ -144,7 +154,7 @@ public class rTutorialProgress
 				p.teleport(rTutorialReloaded.InfoLocation.get(LocationName[Progress.get(p.getName()).intValue()]));
 				if(rTutorialReloaded.CompatiblePlugins[0])
 				{
-					BarAPI.setMessage(p, SubSection.VariableSub(SubSection.SubMsg("BarAPIPercent", p, true, false), format.format((Progress.get(p.getName()) / rTutorialReloaded.MethodAmount) * 100)) , (Progress.get(p.getName()) / rTutorialReloaded.MethodAmount) * 100);
+					BarAPI.setMessage(p, SubSection.VariableSub(SubSection.SubMsg("BarAPIPercent", p, true, false), format.format((((Progress.get(p.getName()) + 1.0F) / rTutorialReloaded.MethodAmount)) * 100)) , (Progress.get(p.getName()) / rTutorialReloaded.MethodAmount) * 100);
 				}
 				if(rTutorialReloaded.CompatiblePlugins[1]) TitleAPI.sendTitle(p, rTutorialReloaded.DefaultDelaySeconds / 6,rTutorialReloaded.DefaultDelaySeconds / 6, rTutorialReloaded.DefaultDelaySeconds*20, SubSection.RepColor(Cut[0]), SubSection.RepColor(Cut[1]));
 				else p.sendMessage(SubSection.RepColor(Cut[0]));
@@ -152,18 +162,6 @@ public class rTutorialProgress
 				Progress.put(p.getName(), Progress.get(p.getName()) + 1.0F);
 			}
 		}, 0L, rTutorialReloaded.DefaultDelaySeconds*20L);
-		if(rTutorialReloaded.isPlayerBackup.containsKey(p))
-		{
-			if(rTutorialReloaded.isPlayerBackup.get(p).booleanValue())
-			{
-				rTutorialReloaded.isPlayerBackup.remove(p);
-				RestoreLocation(p);
-			}
-		}
-		else
-		{
-			Progress.put(p.getName(), 0.0F);
-		}
 		HidePlayer(p, true);
 		p.setWalkSpeed(0.0F);
 		p.setFlySpeed(0.0F);
@@ -192,7 +190,7 @@ public class rTutorialProgress
 						rTutorialReloaded.plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), SubSection.Sub(Cutter[1], p));
 					}
 					
-					else if(Commands.contains("Money"))
+					else if(Commands.contains("Money") && rTutorialReloaded.CompatiblePlugins[3])
 					{
 						Economy Echo = com.ReanKR.rTutorialReloaded.Listeners.EconomyAPI.getEconomy();
 						Echo.depositPlayer(p, Double.parseDouble(Cutter[1]));
@@ -216,7 +214,7 @@ public class rTutorialProgress
 					{
 						ItemName = Items.getType().name();
 					}
-					SubSection.Msg(p, "아이템 : " + ItemName + " x" + Items.getAmount());
+					SubSection.Msg(p, "아이템 : " + ItemName + ChatColor.WHITE + "x" + Items.getAmount());
 				}
 			}
 		}
@@ -253,7 +251,7 @@ public class rTutorialProgress
 		return false;
 	}
 
-	public void endTask(Player p, boolean CompleteTutorial)
+	public static void endTask(Player p, boolean CompleteTutorial)
 	{
 		if(taskID.containsKey(p.getName()))
 		{
@@ -273,6 +271,7 @@ public class rTutorialProgress
 			p.setGameMode(PlayerGameMode.get(p.getName()));
 			p.setWalkSpeed(PlayerSpeed.get(p.getName()));
 			p.setFlySpeed(PlayerFlySpeed.get(p.getName()));
+			BackupManager.RemoveBackup(p);
 		}
 	}
 	public static void AddOnlinePlayer(Player p)

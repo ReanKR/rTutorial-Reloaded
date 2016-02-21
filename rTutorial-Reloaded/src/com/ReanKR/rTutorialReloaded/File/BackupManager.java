@@ -2,7 +2,9 @@ package com.ReanKR.rTutorialReloaded.File;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,6 +17,15 @@ import com.ReanKR.rTutorialReloaded.Util.SubSection;
 
 public class BackupManager
 {
+	public static void ScarchhasBackup()
+	{
+		ConfigurationSection BackupSection = FileSection.LoadFile("Backup");
+		Set<String> PlayerName = BackupSection.getKeys(false);
+		for(String p : PlayerName)
+		{
+			rTutorialReloaded.isPlayerBackup.put(p, true);
+		}
+	}
 	public static void SaveUnexpected(Player player)
 	{
 	    File file = new File("plugins/rTutorialReloaded/Backup.yml");
@@ -25,6 +36,7 @@ public class BackupManager
 		PlayerSection.set("WalkSpeed", rTutorialProgress.PlayerSpeed.get(player.getName()));
 		PlayerSection.set("FlySpeed", rTutorialProgress.PlayerFlySpeed.get(player.getName()));
 		PlayerSection.set("Gamemode", rTutorialProgress.PlayerGameMode.get(player.getName()).name());
+		rTutorialReloaded.isPlayerBackup.put(player.getName(), true);
 		if(rTutorialReloaded.ProgressingTutorial.get(player.getName()).equalsIgnoreCase("WORKING"))
 		{
 			PlayerSection.set("Progressing", rTutorialProgress.LocationProgress.get(player.getName()));
@@ -36,6 +48,20 @@ public class BackupManager
 		try
 		{
 			ConfigFile.save(file);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void RemoveBackup(Player p)
+	{
+		File file = new File("plugins/rTutorialReloaded/Backup.yml");
+		YamlConfiguration BackupFile = YamlConfiguration.loadConfiguration(file);
+		BackupFile.set(p.getName(), null);
+		try
+		{
+			BackupFile.save(file);
 		}
 		catch (IOException e)
 		{
@@ -81,11 +107,11 @@ public class BackupManager
 		ConfigurationSection PlayerFile = BackupFile.getConfigurationSection(p.getName());
 		float WalkSpeed = Float.parseFloat(PlayerFile.get("WalkSpeed").toString());
 		float FlySpeed = Float.parseFloat(PlayerFile.get("FlySpeed").toString());
+		GameMode Gamemode = GameMode.SURVIVAL;
 		String GM = PlayerFile.get("Gamemode").toString();
-		if(GM.equalsIgnoreCase("SURVIVAL")) p.setGameMode(GameMode.SURVIVAL);
-		else if(GM.equalsIgnoreCase("CREATIVE")) p.setGameMode(GameMode.CREATIVE);
-		else if(GM.equalsIgnoreCase("SPECTATOR")) p.setGameMode(GameMode.SPECTATOR);
-		else p.setGameMode(GameMode.SURVIVAL);
+		if(GM.equalsIgnoreCase("CREATIVE")) Gamemode = GameMode.CREATIVE;
+		else if(GM.equalsIgnoreCase("SPECTATOR")) Gamemode = GameMode.SPECTATOR;
+		p.setGameMode(Gamemode);
 		p.setWalkSpeed(WalkSpeed);
 		p.setFlySpeed(FlySpeed);
 		BackupFile.set(p.getName(), null);

@@ -34,8 +34,6 @@
 # New supported method type: Descrption, Enchantment, DisplayName
 # Required method type: ID
 #
-# Available Enchantments -> Enchantments.yml
-#
 Main:
   Config-Version: 1
   Run-First-Join-Player: false

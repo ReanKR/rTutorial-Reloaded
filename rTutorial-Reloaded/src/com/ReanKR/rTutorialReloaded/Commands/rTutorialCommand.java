@@ -135,9 +135,9 @@ public class rTutorialCommand implements CommandExecutor
 					}
 					else if(args[0].equalsIgnoreCase("continue"))
 					{
-						if(rTutorialReloaded.isPlayerBackup.containsKey(p))
+						if(rTutorialReloaded.isPlayerBackup.containsKey(p.getName()))
 						{
-							if(rTutorialReloaded.isPlayerBackup.get(p).booleanValue())
+							if(rTutorialReloaded.isPlayerBackup.get(p.getName()).booleanValue())
 							{
 								TP.TutorialCooldown(p);
 								return true;
@@ -151,12 +151,12 @@ public class rTutorialCommand implements CommandExecutor
 					}
 					else if(args[0].equalsIgnoreCase("Cancel"))
 					{
-						if(rTutorialReloaded.isPlayerBackup.containsKey(p))
+						if(rTutorialReloaded.isPlayerBackup.containsKey(p.getName()))
 						{
-							if(rTutorialReloaded.isPlayerBackup.get(p).booleanValue())
+							if(rTutorialReloaded.isPlayerBackup.get(p.getName()).booleanValue())
 							{
 								BackupManager.RestorePlayer(p);
-								rTutorialReloaded.isPlayerBackup.remove(p);
+								rTutorialReloaded.isPlayerBackup.remove(p.getName());
 								return true;
 							}
 						}
