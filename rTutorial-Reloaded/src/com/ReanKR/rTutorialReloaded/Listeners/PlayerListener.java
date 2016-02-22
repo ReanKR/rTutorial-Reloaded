@@ -4,14 +4,17 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.ReanKR.rTutorialReloaded.rTutorialProgress;
@@ -46,17 +49,22 @@ public class PlayerListener implements Listener
 	{
 		e.getItem().setDurability((short) (e.getItem().getDurability() - 4));
 	}*/
-	
-	@EventHandler
+	/*
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void WorldChange(PlayerTeleportEvent e)
 	{
-		if(!(e.getFrom().getWorld().getName().equalsIgnoreCase(e.getTo().getWorld().getName())) && rTutorialProgress.taskID.containsKey(e.getPlayer().getName()))
+		Location GetTo = e.getTo();
+		Location GetFrom = e.getFrom();
+		if(! GetFrom.getWorld().getName().equalsIgnoreCase(GetTo.getWorld().getName()))
 		{
+			if(FileSection.PlayerSection(e.getPlayer()).getString("Progress").equalsIgnoreCase("WORKING"))
+			{
 			e.getPlayer().setWalkSpeed(0.0F);
 			e.getPlayer().setFlySpeed(0.0F);
 			e.getPlayer().setGameMode(GameMode.SPECTATOR);
+			}
 		}
-	}
+	}*/
 
 	@EventHandler
 	public void PlayerJoin(PlayerJoinEvent e)

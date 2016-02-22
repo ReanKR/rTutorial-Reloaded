@@ -1,29 +1,28 @@
 package com.ReanKR.rTutorialReloaded;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.ReanKR.rTutorialReloaded.rTutorialReloaded;
+import com.ReanKR.rTutorialReloaded.API.TitleAPI;
 import com.ReanKR.rTutorialReloaded.File.BackupManager;
 import com.ReanKR.rTutorialReloaded.File.FileSection;
 import com.ReanKR.rTutorialReloaded.Util.SoundCreation;
 import com.ReanKR.rTutorialReloaded.Util.SubSection;
-import com.connorlinfoot.titleapi.TitleAPI;
 
 import me.confuser.barapi.BarAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class rTutorialProgress
 {
 	DecimalFormat format = new DecimalFormat("0.#");
@@ -34,6 +33,7 @@ public class rTutorialProgress
 	public static Map<String, Float> PlayerSpeed;
 	public static Map<String, Float> PlayerFlySpeed;
 	public static Map<String, List<Player>> ListHidePlayer;
+	public static Map<String, Location> LastLocation;
 	private SoundCreation SC = new SoundCreation();
 	
 	@SuppressWarnings("deprecation")
@@ -47,7 +47,7 @@ public class rTutorialProgress
 				if(! rTutorialReloaded.plugin.getServer().getOfflinePlayer(p.getName()).isOnline()) // if player leaved server when tutorial progressing
 				{
 					if(rTutorialReloaded.CompatiblePlugins[0]) BarAPI.removeBar(p);
-					HidePlayer(p, false);
+					HidePlayer(p, false); 
 					endTask(p, false);
 					return;
 				}
@@ -72,7 +72,7 @@ public class rTutorialProgress
 						PlayerSpeed.put(p.getName(), p.getWalkSpeed());
 						PlayerFlySpeed.put(p.getName(), p.getFlySpeed());
 					}
-					AddOnlinePlayer(p);
+					LastLocation.put(p.getName(), p.getLocation());
 					HidePlayer(p, true);
 					endTask(p, false);
 					ProgressingTutorial(p);
@@ -115,26 +115,18 @@ public class rTutorialProgress
 	{
 		ConfigurationSection Section = FileSection.LoadFile("Location").getConfigurationSection("Locations");
 		Object[] LocationName = Section.getKeys(false).toArray();
-		if(rTutorialReloaded.isPlayerBackup.containsKey(p.getName()))
-		{
-			if(rTutorialReloaded.isPlayerBackup.get(p.getName()).booleanValue())
-			{
-				rTutorialReloaded.isPlayerBackup.remove(p.getName());
-				RestoreLocation(p);
-			}
-		}
-		else
-		{
-			Progress.put(p.getName(), 0.0F);
-		}
 		final int tid = rTutorialReloaded.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(rTutorialReloaded.plugin, new Runnable()
 		{
 			@Override
 			public void run()
 			{
+				p.setWalkSpeed(0.0F);
+				p.setFlySpeed(0.0F);
+				p.setGameMode(GameMode.SPECTATOR);
 				if(! rTutorialReloaded.plugin.getServer().getOfflinePlayer(p.getName()).isOnline()) // if player leaved server when tutorial progressing
 				{
 					if(rTutorialReloaded.CompatiblePlugins[0]) BarAPI.removeBar(p);
+					
 					BackupManager.SaveUnexpected(p);
 					HidePlayer(p, false);
 					endTask(p, false);
@@ -143,12 +135,11 @@ public class rTutorialProgress
 				
 				if(Progress.get(p.getName()).intValue() >= rTutorialReloaded.MethodAmount)
 				{
-					BarAPI.removeBar(p);
+					if(rTutorialReloaded.CompatiblePlugins[0]) BarAPI.removeBar(p);
 					endTask(p, true);
 					Result(p);
 					return;
 				}
-
 				String[] Cut = rTutorialReloaded.MessageMethod.get(LocationName[Progress.get(p.getName()).intValue()]).split(",");
 				if(! rTutorialReloaded.SoundDisabled) SC.PlayerSound(p, Sound.LEVEL_UP, 10.0F, 1.0F);
 				p.teleport(rTutorialReloaded.InfoLocation.get(LocationName[Progress.get(p.getName()).intValue()]));
@@ -162,11 +153,20 @@ public class rTutorialProgress
 				Progress.put(p.getName(), Progress.get(p.getName()) + 1.0F);
 			}
 		}, 0L, rTutorialReloaded.DefaultDelaySeconds*20L);
+		if(rTutorialReloaded.isPlayerBackup.containsKey(p.getName()))
+		{
+			if(rTutorialReloaded.isPlayerBackup.get(p.getName()).booleanValue())
+			{
+				rTutorialReloaded.isPlayerBackup.remove(p.getName());
+				RestoreLocation(p);
+			}
+		}
+		else
+		{
+			Progress.put(p.getName(), 0.0F);
+		}
 		HidePlayer(p, true);
-		p.setWalkSpeed(0.0F);
-		p.setFlySpeed(0.0F);
 		taskID.put(p.getName(), tid);
-		p.setGameMode(GameMode.SPECTATOR);
 		rTutorialReloaded.ProgressingTutorial.put(p.getName(), "WORKING");
 		BackupManager.SetPlayerProgress(p);
 	}
@@ -266,7 +266,7 @@ public class rTutorialProgress
 			rTutorialProgress.LocationProgress.remove(p.getName());
 			rTutorialProgress.ListHidePlayer.remove(p.getName());
 			rTutorialProgress.Progress.remove(p.getName());
-			BarAPI.removeBar(p);
+			if(rTutorialReloaded.CompatiblePlugins[0]) BarAPI.removeBar(p);
 			HidePlayer(p, false);
 			p.setGameMode(PlayerGameMode.get(p.getName()));
 			p.setWalkSpeed(PlayerSpeed.get(p.getName()));
@@ -274,34 +274,29 @@ public class rTutorialProgress
 			BackupManager.RemoveBackup(p);
 		}
 	}
-	public static void AddOnlinePlayer(Player p)
-	{
-		List<Player> NameOnlinePlayers = new ArrayList();
-		for(Player player : Bukkit.getOnlinePlayers())
-		{
-			NameOnlinePlayers.add(player);
-			if(player != null)
-			{
-				NameOnlinePlayers.add(player);
-			}
-		}
-		ListHidePlayer.put(p.getName(), NameOnlinePlayers);
-		return;
-	}
 	
 	public static void HidePlayer(Player p, boolean isHide)
 	{
 		try
 		{
-			for(Player player : ListHidePlayer.get(p.getName()))
+			for(Player player : Bukkit.getOnlinePlayers())
 			{
-				if(isHide) p.hidePlayer(player);
-				else p.showPlayer(player);
+				if(player != null)
+				{
+					if(isHide)
+					{
+						p.hidePlayer(player);
+					}
+					else
+					{
+						p.showPlayer(player);
+					}
+				}
 			}
 		}
 		catch(NullPointerException e)
 		{
-			
+			e.printStackTrace();
 		}
 	}
 }
